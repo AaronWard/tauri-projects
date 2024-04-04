@@ -41,6 +41,9 @@ jobs:
     runs-on: ${{ matrix.settings.platform }}
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Change to frontend directory
+        run: cd example6
 
       - name: install dependencies (ubuntu only)
         if: matrix.settings.platform == 'ubuntu-22.04' # This must match the platform value defined above.
@@ -56,7 +59,6 @@ jobs:
           node-version: lts/*
           cache: 'npm' # Set this to npm, yarn or pnpm.
           cache-dependency-path: example6/package-lock.json
-      - run: npm install
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
