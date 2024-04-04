@@ -11,7 +11,6 @@
 # - Install the frontend dependencies and, if not configured as beforeBuildCommand, run the web app's build script.
 # - Finally, it uses tauri-apps/tauri-action@v0 to run tauri build, generate the artifacts, and create the GitHub release.
 
-
 name: 'publish'
 
 on:
@@ -19,7 +18,6 @@ on:
     branches:
       - release
   workflow_dispatch: # Manual release
-    
 
 jobs:
   publish-tauri:
@@ -56,8 +54,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: example6/package-lock.json
 
-      # Note: For steps using 'uses', you cannot specify 'working-directory' directly. It applies to 'run'.
-
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -66,7 +62,8 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          # Adjust the path to point to the src-tauri directory within example6
+          workspaces: 'example6/src-tauri -> target'
 
       - name: Install frontend dependencies
         run: npm install
@@ -82,3 +79,4 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.settings.args }}
+        # working-directory: example6/src-tauri # This is crucial for Tauri commands
