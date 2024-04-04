@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tauri App</title>
+  <style>
+    .logo.vanilla:hover {
+      filter: drop-shadow(0 0 2em #ffe21c);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Tauri!</h1>
+    <div class="row">
+      <a href="https://tauri.app" target="_blank">
+        <img src="/assets/tauri.svg" class="logo tauri" alt="Tauri logo" />
+      </a>
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
+        <img src="/assets/javascript.svg" class="logo vanilla" alt="JavaScript logo" />
+      </a>
+    </div>
+    <p>Click on the Tauri logo to learn more about the framework</p>
+
+    <form class="row" id="greet-form">
+      <input id="greet-input" placeholder="Enter a name..." />
+      <button type="submit">Greet</button>
+    </form>
+
+    <p id="greet-msg"></p>
+  </div>
+
+  <script>
+    // This script tag will replace the form's submission behavior with Tauri's invoke
+    const form = document.getElementById('greet-form');
+    const greetMsg = document.getElementById('greet-msg');
+    const greetInput = document.getElementById('greet-input');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from submitting in the traditional way
+
+      // Access the pre-bundled global API functions
+      const { invoke } = window.__TAURI__.tauri;
+
+      // Invoke the 'greet' command with the name provided by the user
+      invoke('greet', { name: greetInput.value })
+        .then((response) => {
+          greetMsg.innerHTML = response; // Display the response in <p id="greet-msg"></p>
+        })
+        .catch((error) => {
+          console.error('Error calling Tauri invoke:', error);
+          greetMsg.innerHTML = "Failed to greet."; // Handle errors gracefully
+        });
+    });
+  </script>
+</body>
+</html>
