@@ -55,6 +55,7 @@ jobs:
         with:
           node-version: lts/*
           cache: 'npm' # Set this to npm, yarn or pnpm.
+          cache-dependency-path: example6/package-lock.json
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
