@@ -1,15 +1,3 @@
-# Example 6:
-# This is an example action to build and release your app for
-# Linux x64, Windows x64, macOS x64 and macOS Arm64 (M1 and above).
-# The steps this workflow takes are:
-#
-# STEPS:
-# - Checkout the repository using actions/checkout@v4
-# - Install Linux system dependencies required to build the app.
-# - Set up Node LTS and a cache for global npm/yarn/pnpm package data using actions/setup-node@v4.
-# - Set up Rust and a cache for the target/ folder using dtolnay/rust-toolchain@stable and swatinem/rust-cache@v2.
-# - Install the frontend dependencies and, if not configured as beforeBuildCommand, run the web app's build script.
-# - Finally, it uses tauri-apps/tauri-action@v0 to run tauri build, generate the artifacts, and create the GitHub release.
 name: 'Publish Tauri App'
 
 on:
