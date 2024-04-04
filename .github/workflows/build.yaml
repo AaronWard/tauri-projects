@@ -10,23 +10,22 @@
 # - Set up Rust and a cache for the target/ folder using dtolnay/rust-toolchain@stable and swatinem/rust-cache@v2.
 # - Install the frontend dependencies and, if not configured as beforeBuildCommand, run the web app's build script.
 # - Finally, it uses tauri-apps/tauri-action@v0 to run tauri build, generate the artifacts, and create the GitHub release.
-
-name: 'publish'
+name: 'Publish Tauri App'
 
 on:
   push:
     branches:
       - release
-  workflow_dispatch: # Manual release
+  workflow_dispatch:
 
 jobs:
-  publish-tauri:
+  build-and-release:
     permissions:
       contents: write
     strategy:
       fail-fast: false
       matrix:
-        settings:
+        include:
           - platform: 'macos-latest'
             args: '--target aarch64-apple-darwin'
           - platform: 'macos-latest'
@@ -35,13 +34,13 @@ jobs:
             args: ''
           - platform: 'windows-latest'
             args: ''
-
-    runs-on: ${{ matrix.settings.platform }}
+    runs-on: ${{ matrix.include.platform }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Install dependencies (Ubuntu only)
-        if: matrix.settings.platform == 'ubuntu-22.04'
+      - name: Install System Dependencies (Ubuntu only)
+        if: matrix.include.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
@@ -51,32 +50,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'npm'
-          cache-dependency-path: example6/package-lock.json
+          cache: 'yarn'
+          cache-dependency-path: example6/yarn.lock
 
-      - name: Install Rust stable
+      - name: Install Rust Stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.include.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: Rust cache
+      - name: Cache Rust Target Folder
         uses: swatinem/rust-cache@v2
         with:
-          # Adjust the path to point to the src-tauri directory within example6
+          # Adjusted path for workspaces to match the project directory structure
           workspaces: 'example6/src-tauri -> target'
 
-      - name: Install frontend dependencies
-        run: npm install
+      - name: Install Frontend Dependencies
+        run: yarn install
         working-directory: example6
 
-      - uses: tauri-apps/tauri-action@v0
+      - name: Build and Release with Tauri
+        uses: tauri-apps/tauri-action@v0
+        with:
+          args: ${{ matrix.include.args }}
+          projectPath: example6 # Setting projectPath to match your project directory
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: app-v__VERSION__
-          releaseName: 'App v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.settings.args }}
-        # working-directory: example6/src-tauri # This is crucial for Tauri commands
