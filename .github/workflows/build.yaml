@@ -16,6 +16,8 @@ on:
   push:
     branches:
       - release
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -34,8 +36,7 @@ jobs:
             args: ''
           - platform: 'windows-latest'
             args: ''
-
-    runs-on: ${{ matrix.include.platform }}
+    runs-on: ${{ matrix.settings.platform }}
 
     steps:
       - name: Checkout Repository
