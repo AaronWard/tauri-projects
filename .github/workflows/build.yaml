@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install System Dependencies (Ubuntu only)
-        if: matrix.include.platform == 'ubuntu-22.04'
+        if: matrix.settings.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
@@ -59,7 +59,7 @@ jobs:
       - name: Install Rust Stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.include.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Cache Rust Target Folder
         uses: swatinem/rust-cache@v2
