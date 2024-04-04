@@ -10,7 +10,7 @@
 # - Set up Rust and a cache for the target/ folder using dtolnay/rust-toolchain@stable and swatinem/rust-cache@v2.
 # - Install the frontend dependencies and, if not configured as beforeBuildCommand, run the web app's build script.
 # - Finally, it uses tauri-apps/tauri-action@v0 to run tauri build, generate the artifacts, and create the GitHub release.
-name: 'Publish Tauri App'
+name: Publish Tauri App
 
 on:
   push:
@@ -25,15 +25,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - platform: 'macos-latest'
+        settings:
+          - platform: 'macos-latest' # for Arm based macs (M1 and above).
             args: '--target aarch64-apple-darwin'
-          - platform: 'macos-latest'
+          - platform: 'macos-latest' # for Intel based macs.
             args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-latest'
+          - platform: 'ubuntu-22.04' # for Tauri v1 you could replace this with ubuntu-20.04.
             args: ''
           - platform: 'windows-latest'
             args: ''
+
     runs-on: ${{ matrix.include.platform }}
 
     steps:
