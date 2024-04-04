@@ -46,7 +46,7 @@ jobs:
         if: matrix.include.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
         working-directory: example6
 
       - name: Setup Node
@@ -76,5 +76,8 @@ jobs:
         with:
           args: ${{ matrix.include.args }}
           projectPath: example6 # Setting projectPath to match your project directory
+          tagName: v__VERSION__
+          releaseName: v__VERSION__
+          releaseDraft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
