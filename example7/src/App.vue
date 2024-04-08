@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import SpeechSynthesis from './components/SpeechSynthesis.vue';
 import SpeechRecognition from './components/SpeechRecognition.vue';
-import Example from './components/Example.vue';
+import AudioRecorder from './components/AudioRecorder.vue';
 
-// const config = useRuntimeConfig()
-
-useHead({
-  title: config.public.appTitle,
-  meta: [
-    { name: 'description', content: 'A chatbox application using OpenAI Completion endpoint to simulate conversation.' }
-  ],
-})
 
 </script>
 
@@ -20,7 +12,7 @@ useHead({
   </div> -->
     <hr><br>
   <div>
-    <Example />
+    <AudioRecorder/>
   </div>
 </template>
 
