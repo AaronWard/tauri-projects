@@ -10,8 +10,8 @@ import contacts from '../assets/contacts.json'
 const MAX_COUNT = 3500
 const MIN_DECIBELS = -45
 
-// const config = useRuntimeConfig()
-// const route = useRoute()
+const config = useRuntimeConfig()
+const route = useRoute()
 
 const isReady = ref(false)
 const errorMessage = ref('')

@@ -1,113 +1,122 @@
 <template>
-    <div>
-        <!-- Display the controls conditionally -->
-        <button v-if="isReady && !isRecording" @click="startRecording">Start Recording</button>
-        <button v-if="isRecording" @click="stopRecording">Stop Recording</button>
-        <audio controls v-if="audioSrc" :src="audioSrc"></audio>
-    </div>
+  <div>
+    <!-- Display the controls conditionally -->
+    <button v-if="isReady && !isRecording" @click="startRecording">Start Recording</button>
+    <button v-if="isRecording" @click="stopRecording">Stop Recording</button>
+    <audio controls v-if="audioSrc" :src="audioSrc"></audio>
+  </div>
 </template>
+
 <script>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
 export default {
-  data() {
-    return {
-      isRecording: false,
-      mediaRecorder: null,
-      audioChunks: [],
-      audioSrc: null,
-      silenceTimer: null,
-      isReady: false,
-      audioContext: null, // To manage a single instance of AudioContext
-    };
-  },
-  mounted() {
-    this.requestMicrophoneAccess();
-  },
-  beforeDestroy() {
-    // Clean up to avoid memory leaks
-    if (this.audioContext) {
-      this.audioContext.close();
-    }
-    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-      this.mediaRecorder.stop();
-    }
-  },
-  methods: {
-    async requestMicrophoneAccess() {
+  setup() {
+    const isRecording = ref(false);
+    const mediaRecorder = ref(null);
+    const audioChunks = ref([]);
+    const audioSrc = ref(null);
+    const isReady = ref(false);
+    const audioContext = ref(null);
+    const silenceDuration = ref(0);
+    const animFrame = ref(null);
+
+    const requestMicrophoneAccess = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        this.audioContext = new AudioContext();
-        this.setupMediaRecorder(stream);
-        this.setupSilenceDetection(stream);
-        this.isReady = true;
+        console.log("Microphone access granted");
+        audioContext.value = new AudioContext();
+        setupMediaRecorder(stream);
+        setupSilenceDetection(stream);
+        isReady.value = true;
       } catch (error) {
         console.error('Error accessing the microphone', error);
       }
-    },
-    setupMediaRecorder(stream) {
-      this.mediaRecorder = new MediaRecorder(stream);
-      this.mediaRecorder.ondataavailable = (e) => this.audioChunks.push(e.data);
-      this.mediaRecorder.onstop = () => this.onRecordingStop();
-    },
-    onRecordingStop() {
+    };
+
+    const setupMediaRecorder = (stream) => {
+      mediaRecorder.value = new MediaRecorder(stream);
+      mediaRecorder.value.ondataavailable = (e) => audioChunks.value.push(e.data);
+      mediaRecorder.value.onstop = onRecordingStop;
+    };
+
+    const onRecordingStop = () => {
       console.log('Recording stopped...');
-      const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
-      this.audioSrc = URL.createObjectURL(audioBlob);
-      this.audioChunks = []; // Reset chunks for the next recording
-      // Here, you can add code to send the audioBlob to the backend for transcription
-    },
-    startRecording() {
-      if (!this.isRecording && this.mediaRecorder && this.mediaRecorder.state === 'inactive') {
-        this.audioChunks = [];
-        this.mediaRecorder.start();
-        this.isRecording = true;
+      const audioBlob = new Blob(audioChunks.value, { type: mediaRecorder.value.mimeType });
+      audioSrc.value = URL.createObjectURL(audioBlob);
+      audioChunks.value = [];
+    };
+
+    const startRecording = () => {
+      if (!isRecording.value && mediaRecorder.value && mediaRecorder.value.state === 'inactive') {
+        audioChunks.value = [];
+        mediaRecorder.value.start();
+        isRecording.value = true;
         console.log('Recording started...');
       }
-    },
-    stopRecording() {
-      if (this.isRecording && this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-        this.mediaRecorder.stop();
-        this.isRecording = false;
-        clearTimeout(this.silenceTimer);
-        console.log('Recording stopped by silence...');
+    };
+
+    const stopRecording = () => {
+      if (isRecording.value && mediaRecorder.value && mediaRecorder.value.state === 'recording') {
+        mediaRecorder.value.stop();
+        isRecording.value = false;
+        silenceDuration.value = 0; // Reset the silence duration when stopping
       }
-    },
-    setupSilenceDetection(stream) {
-      const source = this.audioContext.createMediaStreamSource(stream);
-      const analyser = this.audioContext.createAnalyser();
+    };
+
+    const setupSilenceDetection = (stream) => {
+      const source = audioContext.value.createMediaStreamSource(stream);
+      const analyser = audioContext.value.createAnalyser();
       analyser.fftSize = 2048;
-      analyser.minDecibels = -90; // Adjust based on testing
-      analyser.maxDecibels = -10; // Adjust based on testing
+      analyser.minDecibels = -40;
       source.connect(analyser);
       const bufferLength = analyser.fftSize;
       const dataArray = new Uint8Array(bufferLength);
 
+      let lastTime = Date.now();
+
       const checkSilence = () => {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - lastTime;
+        lastTime = currentTime;
+
         analyser.getByteTimeDomainData(dataArray);
         let sum = 0;
-        for(let i = 0; i < bufferLength; i++) {
+        for (let i = 0; i < bufferLength; i++) {
           const x = dataArray[i] / 128.0 - 1.0;
           sum += x * x;
         }
         const rms = Math.sqrt(sum / bufferLength);
-        const isSilent = rms < 0.01; // This threshold determines silence, adjust as necessary
+        const isSilent = rms < 0.02; // Adjusted threshold for silence detection
 
-        if (!isSilent && !this.isRecording) {
-          this.startRecording();
+        if (!isSilent && isRecording.value) {
+          console.log('!isSilent && isRecording.value...');
+          silenceDuration.value = 0; // Reset silence duration on sound detection
+        } else if (isSilent && isRecording.value) {
+          console.log('isSilent && isRecording.value...');
+          silenceDuration.value += elapsedTime; // Increment the silence duration based on actual elapsed time
+          if (silenceDuration.value >= 3000) { // Stop recording after 3 seconds of silence
+            console.log('isilenceDuration.value >= 3000...');
+            stopRecording();
+          }
         }
 
-        if (isSilent && this.isRecording) {
-          clearTimeout(this.silenceTimer);
-          this.silenceTimer = setTimeout(() => {
-            this.stopRecording();
-          }, 2000); // Stop after 2 seconds of silence
-        }
-
-        if (this.isReady) {
-          requestAnimationFrame(checkSilence);
-        }
+        animFrame.value = requestAnimationFrame(checkSilence);
       };
       checkSilence();
-    },
-  },
+    };
+
+    onMounted(async () => {
+      await requestMicrophoneAccess();
+    });
+
+    onBeforeUnmount(() => {
+      if (animFrame.value) {
+        cancelAnimationFrame(animFrame.value);
+      }
+    });
+
+    return { isRecording, audioSrc, isReady, startRecording, stopRecording };
+  }
 };
 </script>

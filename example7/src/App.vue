@@ -3,7 +3,6 @@ import SpeechSynthesis from './components/SpeechSynthesis.vue';
 import SpeechRecognition from './components/SpeechRecognition.vue';
 import AudioRecorder from './components/AudioRecorder.vue';
 
-
 </script>
 
 <template>

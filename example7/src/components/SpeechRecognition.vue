@@ -40,6 +40,16 @@
   <script setup>
   import { ref, watch } from 'vue';
   import { useSpeechRecognition } from '@vueuse/core';
+
+
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+  .then(stream => {
+    console.log('Microphone access granted');
+    // Proceed with stream processing
+  })
+  .catch(error => {
+    console.error('Microphone access denied', error);
+  });
   
   const lang = ref('en-US');
   const selectedLanguage = ref(lang.value);
