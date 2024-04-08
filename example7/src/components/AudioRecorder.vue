@@ -8,6 +8,16 @@
 </template>
 
 <script>
+/**
+ * This uses the permissions of entitlements.plist for access to the microphone.
+ * This script will record audio continuously as long as the noise levels
+ * remain above -40 decibels for atleast 3 seconds. The idea here is that you 
+ * 
+ * TODO: 
+ * - impelement transcription
+ * - send text to LLM.
+ * - impelement auto recording again once a response is returned
+ */
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 export default {
@@ -100,7 +110,6 @@ export default {
             stopRecording();
           }
         }
-
         animFrame.value = requestAnimationFrame(checkSilence);
       };
       checkSilence();
