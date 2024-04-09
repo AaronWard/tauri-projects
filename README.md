@@ -16,6 +16,7 @@ npm run tauri dev
 5. Example using `vscode-lldb` vs code extension to enable debugging in any rust file, must add `.vscode/launch.json` and `.vscode/tasks.json`
 6. An example using `tauri-apps/tauri-action@v0` github action to automate building for MacOS, Windows and Linux operating systems. Check `.github/workflows/build.yaml`
 7. Example of tauri application getting micrphone access, with recorder which stops recording after 3 seconds of silence. Check `entitlements.plist`, `tauri.conf.json` and `AudioRecorder.vue`
+8. Example using crabnebula devtools.
 <!-- 7. Reducing build size: the following example showcases how to optimize builds for size
 8. Embedding External Binaries
 9. Embedding Additional Files -->
