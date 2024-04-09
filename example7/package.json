@@ -13,7 +13,8 @@
     "@tauri-apps/api": "^1",
     "@vueuse/core": "^10.9.0",
     "crypto-js": "^4.2.0",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue-audio-visual": "^3.0.7"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1",

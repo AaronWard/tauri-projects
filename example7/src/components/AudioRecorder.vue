@@ -3,7 +3,12 @@
     <!-- Display the controls conditionally -->
     <button v-if="isReady && !isRecording" @click="startRecording">Start Recording</button>
     <button v-if="isRecording" @click="stopRecording">Stop Recording</button>
-    <audio controls v-if="audioSrc" :src="audioSrc"></audio>
+
+    <!-- Audio playback and visualization -->
+    <div v-if="audioSrc">
+      <!-- <audio controls :src="audioSrc"></audio> -->
+      <AVLine :src="audioSrc" line-color="magenta" noplayed-line-color="#555" line-width="2"></AVLine>
+    </div>
   </div>
 </template>
 
@@ -19,8 +24,14 @@
  * - impelement auto recording again once a response is returned
  */
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { AVWaveform,AVLine } from 'vue-audio-visual'
+
 
 export default {
+  components: {
+    AVWaveform,
+    AVLine
+  },
   setup() {
     const isRecording = ref(false);
     const mediaRecorder = ref(null);
