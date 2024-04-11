@@ -1,52 +1,47 @@
 <script setup>
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from "./components/Greet.vue";
+import { onMounted, ref } from "vue";
+import { appWindow } from "@tauri-apps/api/window";
+import { open } from "@tauri-apps/api/dialog";
+import { readTextFile, BaseDirectory } from "@tauri-apps/api/fs";
+
+const content = ref("");
+
+
+onMounted(() => {
+  appWindow.listen("new-content", () => {
+    console.log("new-content event emitted");
+    content.value = "";
+  });
+  appWindow.listen("open-file", async () => {
+    try {
+      const filePath = await open({
+        title: "Select a Text File",
+        filters: [{ name: "Text", extensions: ["txt"] }],
+      });
+      if (!filePath) return;
+      // Read the text file in the `$APPCONFIG/app.conf` path
+      // const fileContent = await readTextFile('app.conf', { dir: BaseDirectory.AppConfig });
+      const fileContent = await readTextFile(filePath, {});
+
+      content.value = fileContent;
+    } catch (error) {
+      console.error(error);
+    }
+  });
+});
+
 </script>
 
 <template>
   <div class="container">
-    <h1>Welcome to Tauri!</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
-
-    <p>
-      Recommended IDE setup:
-      <a href="https://code.visualstudio.com/" target="_blank">VS Code</a>
-      +
-      <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-      +
-      <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank"
-        >Tauri</a
-      >
-      +
-      <a href="https://github.com/rust-lang/rust-analyzer" target="_blank"
-        >rust-analyzer</a
-      >
-    </p>
-
-    <Greet />
+    <textarea v-model="content" rows="20" class="content-area"/>
   </div>
 </template>
 
 <style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
+content-area {
+  width: 100%;
 }
 </style>

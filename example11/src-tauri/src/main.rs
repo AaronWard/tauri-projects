@@ -22,6 +22,18 @@ fn create_app_menu() -> Menu {
 fn main() {
     tauri::Builder::default()
         .menu(create_app_menu())
+        .on_menu_event(|event| match event.menu_item_id() {
+            "new" => {
+                event.window().emit("new-content", "").unwrap();
+            }
+            "open" => {
+                event.window().emit("open-file", "").unwrap();
+            }
+            "save" => {
+                event.window().emit("save-content", "").unwrap();
+            }
+            _ => {}
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
