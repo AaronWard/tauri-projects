@@ -19,7 +19,8 @@ npm run tauri dev
 8. Example using [crabnebula](https://github.com/crabnebula-dev/devtools) devtools (https://devtools.crabnebula.dev/dash/127.0.0.1/3000/console)
 9. Using sidecar to execute some python executable built with `PyInstaller`, which is run by the JS frontend. (also included dev-tools to inspect the time waterfall of the operations)
 10. Using the `tauri-cli` and `cargo tauri icon` command to change the desktop app icon.
-11. Creating a custom window menu with `main.rs` 
+11. Creating a custom window menu with `main.rs`
+12. Saving a file from an action in frontend frontend to the machine filesystem.
 <!-- 7. Reducing build size: the following example showcases how to optimize builds for size
 8. Embedding External Binaries
 9. Embedding Additional Files -->
