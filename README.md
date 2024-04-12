@@ -21,6 +21,7 @@ npm run tauri dev
 10. Using the `tauri-cli` and `cargo tauri icon` command to change the desktop app icon.
 11. Creating a custom window menu with `main.rs`
 12. Saving a file from an action in frontend frontend to the machine filesystem.
+13. 
 <!-- 7. Reducing build size: the following example showcases how to optimize builds for size
 8. Embedding External Binaries
 9. Embedding Additional Files -->
