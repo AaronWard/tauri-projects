@@ -3,8 +3,8 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Greet from "./components/Greet.vue";
 
-// window.__VUE_OPTIONS_API__ = true; // Enable/disable Vue Options API (set to false if not using Options API)
-// window.__VUE_PROD_DEVTOOLS__ = false; // Enable/disable Vue Devtools in production
+window.__VUE_OPTIONS_API__ = true; // Enable/disable Vue Options API (set to false if not using Options API)
+window.__VUE_PROD_DEVTOOLS__ = false; // Enable/disable Vue Devtools in production
 
 
 </script>
