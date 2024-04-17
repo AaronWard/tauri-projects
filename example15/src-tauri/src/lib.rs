@@ -6,6 +6,7 @@ use std::env;
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
+    run_app();
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
@@ -58,7 +59,6 @@ pub fn run() {
             .build()?;
 
             // let content_url = serve_app_content();
-            run_app();
 
             // let content_url = WebviewUrl::External(content_url);
 
