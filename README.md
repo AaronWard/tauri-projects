@@ -21,13 +21,15 @@ npm run tauri dev
 10. Using the `tauri-cli` and `cargo tauri icon` command to change the desktop app icon.
 11. Creating a custom window menu with `main.rs`
 12. Saving a file from an action in frontend frontend to the machine filesystem.
-13. 
+13. Using webpack to load in a Javascript plugin dynamically using the UI. (Need to fix, doesn't work in browser only window)
+14. < broken version of example13 >
 <!-- 7. Reducing build size: the following example showcases how to optimize builds for size
 8. Embedding External Binaries
 9. Embedding Additional Files -->
 
-
-
 # Tauri version >= v2.0
 
 Tauri has a new version coming out with additional capabilities, so separated the examples related to the latest release here: 
+
+15. Setting up a tauri 2 project for the first time with `npm create tauri-app@latest -- --beta`. Will
+

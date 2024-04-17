@@ -1,5 +1,4 @@
 const { VueLoaderPlugin } = require('vue-loader');
-const { DefinePlugin } = require('webpack'); // Import DefinePlugin
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -20,8 +19,8 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'vue-style-loader',
-          'css-loader'
+          'vue-style-loader', // This loader applies CSS to the DOM by injecting a <style> tag
+          'css-loader'       // The css-loader interprets @import and url() like import/require() and will resolve them.
         ]
       },
       {
@@ -36,17 +35,12 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      template: './index.html'
-    }),
-    new DefinePlugin({ // Set Vue-specific feature flags
-      __VUE_OPTIONS_API__: JSON.stringify(false),
-      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
-      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(true)
+      template: './index.html' // Make sure the path to index.html is correct.
     })
   ],
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm-bundler.js'
+      'vue$': 'vue/dist/vue.esm-bundler.js' // Ensure the alias 'vue$' points to the correct Vue distribution file
     },
     extensions: ['.js', '.vue', '.json']
   },
@@ -54,9 +48,9 @@ module.exports = {
     historyApiFallback: true,
     hot: true,
     host: 'localhost',
-    port: 1420,
+    port: 8080,
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, 'dist'), // Ensure this points to the directory where index.html is served
     },
     client: {
       overlay: {
