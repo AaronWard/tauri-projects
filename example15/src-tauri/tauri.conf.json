@@ -1,7 +1,7 @@
 {
-  "productName": "example16",
+  "productName": "example15",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.aw.dev",
   "build": {
     "frontendDist": "../src"
   },

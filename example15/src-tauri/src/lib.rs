@@ -1,7 +1,11 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use tauri::{LogicalPosition, LogicalSize, WebviewUrl };
 use std::process::Command;
 use std::path::PathBuf;
 use std::env;
+use tauri_plugin_fs::FsExt;
+
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -24,6 +28,8 @@ fn greet(name: &str) -> String {
 
 fn run_app() {
 
+    // const url = "/Users/award40/Desktop/personal/github/tauri-projects/example15/src/example13.app"
+
     match env::current_dir() {
         Ok(current_path) => {
             println!("Current working directory: {:?}", current_path);
@@ -33,7 +39,8 @@ fn run_app() {
         }
     }
     // Locate the `.app` bundle
-    let app_path = PathBuf::from("../src/example13.app");
+    let app_path = PathBuf::from("/Users/award40/Desktop/personal/github/tauri-projects/example15/src/example13.app");
+    
     // Use the `open` command to run the `.app` bundle
     if app_path.exists() {
         Command::new("open")
@@ -51,6 +58,7 @@ fn run_app() {
 pub fn run() {
     tauri::Builder
         ::default()
+        .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let width = 1200.0;
             let height = 1000.0;
@@ -58,10 +66,9 @@ pub fn run() {
             .inner_size(width, height)
             .build()?;
 
+
             // let content_url = serve_app_content();
-
             // let content_url = WebviewUrl::External(content_url);
-
 
             // Create a new webview for the app content
             // let webview_attrs = tauri_runtime::webview::WebviewAttributes(content_url);
