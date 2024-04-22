@@ -1,0 +1,29 @@
+[package]
+name = "example18"
+version = "0.0.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+# resolver = "2"  # This can help with certain kinds of dependency resolution issues.
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-beta", features = [] }
+
+[dependencies]
+tauri = { version = "2.0.0-beta", features = [] }
+tauri-plugin-shell = "2.0.0-beta"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+actix-web = "4.5.1"
+actix-rt = "2.9.0"
+actix-files = "0.6.5"  
+tauri-plugin-localhost = "2.0.0-beta"
+tauri-invoke-http = { git = "https://github.com/tauri-apps/tauri-invoke-http", branch = "dev" }
+portpicker = "0.1"  # For picking a random free port
+webkit2gtk-sys = { version = "2.0.1" }  
+
+
+# [patch.crates-io]
+# webkit2gtk-sys = { version = "0.18.0" }
