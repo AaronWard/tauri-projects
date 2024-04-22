@@ -56,3 +56,5 @@ Commands to get wasm of `/wasm/` folder.
 ```
 
 NOTE!!!!: you need to move out of `pkg` because the host application can't see it - the `.wasm` and `.js` file are moved to `wasm/out`
+
+<!-- wasm-bindgen --out-dir out --target web wasm/out/rust_wasm_bg.wasm -->

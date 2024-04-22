@@ -40,7 +40,7 @@ const wasmMiddleware = () => {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         if (req.url.endsWith('.wasm')) {
-          const wasmPath = path.join(__dirname, '/wasm/out/', path.basename(req.url));
+          const wasmPath = path.join(__dirname, 'wasm/out/', path.basename(req.url));
           try {
             const wasmFile = fs.readFileSync(wasmPath);
             res.setHeader('Content-Type', 'application/wasm');

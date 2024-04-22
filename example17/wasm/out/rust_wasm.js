@@ -105,6 +105,10 @@ async function __wbg_load(module, imports) {
     }
 }
 
+// function get_imports() {
+//     return __wbg_get_imports()
+// }
+
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
@@ -232,3 +236,4 @@ async function __wbg_init(input) {
 
 export { initSync }
 export default __wbg_init;
+export { __wbg_get_imports }

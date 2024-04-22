@@ -3,16 +3,15 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Greet from "./components/Greet.vue";
 import { onMounted } from "vue";
-import init, { add as wasmAdd, main_js } from "../wasm/out/rust_wasm.js"; // adjust path accordingly
+import initSync, { add as wasmAdd, main_js, __wbg_get_imports } from "../wasm/out/rust_wasm.js"; // adjust path accordingly
 
-async function loadWasm() {
-  try {
-    await init(); // This initializes the wasm module and loads the wasm file
-    // main_js();
+try {
+  await initSync(); // This initializes the wasm module and loads the wasm file
   } catch (error) {
     console.error("Error loading main html:", error);
-  }
+}
 
+async function loadWasm() {
   try {
     const response = await fetch("rust_wasm_bg.wasm");
     if (!response.ok) {
@@ -20,13 +19,8 @@ async function loadWasm() {
     }
     const buffer = await response.arrayBuffer();
     const module = await WebAssembly.compile(buffer);
-    const imports = {
-      env: {
-        // Create a new WebAssembly Memory object
-        memory: new WebAssembly.Memory({ initial: 256 }),
-      },
-    };
-    const instance = await WebAssembly.instantiate(module);
+    const instance = await WebAssembly.instantiate(module, __wbg_get_imports());
+
     console.log("WASM loaded:", instance);
     console.log("WASM Add function result:", instance.exports.add(22, 33));
   } catch (error) {
@@ -34,15 +28,13 @@ async function loadWasm() {
   }
 }
 
-onMounted(() => {
-  loadWasm().catch(console.error);
-});
+loadWasm().catch(console.error);
 </script>
 
 <template>
-  <Suspense>
+  <!-- <Suspense> -->
     <div class="container"></div>
-  </Suspense>
+  <!-- </Suspense> -->
 </template>
 
 <style scoped>
