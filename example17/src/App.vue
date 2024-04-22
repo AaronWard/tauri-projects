@@ -2,43 +2,47 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Greet from "./components/Greet.vue";
+import { onMounted } from "vue";
+import init, { add as wasmAdd, main_js } from "../wasm/out/rust_wasm.js"; // adjust path accordingly
+
+async function loadWasm() {
+  try {
+    await init(); // This initializes the wasm module and loads the wasm file
+    // main_js();
+  } catch (error) {
+    console.error("Error loading main html:", error);
+  }
+
+  try {
+    const response = await fetch("rust_wasm_bg.wasm");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch WASM: ${response.status}`);
+    }
+    const buffer = await response.arrayBuffer();
+    const module = await WebAssembly.compile(buffer);
+    const imports = {
+      env: {
+        // Create a new WebAssembly Memory object
+        memory: new WebAssembly.Memory({ initial: 256 }),
+      },
+    };
+    const instance = await WebAssembly.instantiate(module);
+    console.log("WASM loaded:", instance);
+    console.log("WASM Add function result:", instance.exports.add(22, 33));
+  } catch (error) {
+    console.error("Error loading WASM:", error);
+  }
+}
+
+onMounted(() => {
+  loadWasm().catch(console.error);
+});
 </script>
 
 <template>
-  <div class="container">
-    <h1>Welcome to Tauri!</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
-
-    <p>
-      Recommended IDE setup:
-      <a href="https://code.visualstudio.com/" target="_blank">VS Code</a>
-      +
-      <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-      +
-      <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank"
-        >Tauri</a
-      >
-      +
-      <a href="https://github.com/rust-lang/rust-analyzer" target="_blank"
-        >rust-analyzer</a
-      >
-    </p>
-
-    <Greet />
-  </div>
+  <Suspense>
+    <div class="container"></div>
+  </Suspense>
 </template>
 
 <style scoped>

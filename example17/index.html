@@ -1,28 +1,16 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri + Vue 3 App</title>
-    <script type="module">
-      async function loadWasm() {
-          const response = await fetch('rust_wasm_bg.wasm');
-          const buffer = await response.arrayBuffer();
-          const module = await WebAssembly.compile(buffer);
-          const instance = await WebAssembly.instantiate(module);
 
-          console.log('WASM loaded:', instance);
-          console.log('Add function result:', instance.exports.add(22, 33));
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tauri + Vue 3 App</title>
+</head>
 
-      }
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
 
-      loadWasm().catch(console.error);
-  </script>
-  </head>
-
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
 </html>

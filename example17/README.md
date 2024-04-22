@@ -54,3 +54,5 @@ Commands to get wasm of `/wasm/` folder.
   528  history
 (base) LAMU0CLP74YXVX6:rust_wasm award40$ 
 ```
+
+NOTE!!!!: you need to move out of `pkg` because the host application can't see it - the `.wasm` and `.js` file are moved to `wasm/out`
