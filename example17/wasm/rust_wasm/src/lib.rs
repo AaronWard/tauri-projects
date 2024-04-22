@@ -1,8 +1,5 @@
 #![no_std]
-
 extern crate wee_alloc;
-
-
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -28,7 +25,6 @@ pub fn main_js() -> Result<(), JsValue> {
 
     Ok(())
 }
-
 
 #[wasm_bindgen]
 pub fn add(left: usize, right: usize) -> usize {
