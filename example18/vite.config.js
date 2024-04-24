@@ -5,7 +5,7 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig(async () => ({
   plugins: [vue()],
   build: {
-    outDir: '/src/dist', // Make sure this points to your Tauri `distDir`
+    outDir: '../dist', // Make sure this points to your Tauri `distDir`
   },
   base: process.env.NODE_ENV === 'production' ? './' : '/',
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`

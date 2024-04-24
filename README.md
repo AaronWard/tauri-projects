@@ -33,8 +33,6 @@ Tauri has a new version coming out with additional capabilities, so separated th
 
 15. Setting up a tauri 2 project for the first time with `npm create tauri-app@latest -- --beta`. Using `WebviewUrl` to load in 3 different webviews within the one app. Also have a button on the frontend which can open up another `.app` file.
 16. My attempt of extending example15 with an "embedded" app window - tried overlaying the window of the binary when run on top desktop application host window and track the side of the host window so i can be programtically resized. Didn't work as planned
-
-17. Building a `vue` application as WASM. 
-18. Embedding a WASM as a webview within a host tauri application.
-19. 
+17. Embedding a WASM as a webview within a host tauri vue application - also included rust WASM backend function to be called from JS frontend. NOTE: html is rended using `web_sys`.
+18. 
 
