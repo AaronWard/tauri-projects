@@ -26,13 +26,13 @@ npm run tauri dev
 <!-- 7. Reducing build size: the following example showcases how to optimize builds for size
 8. Embedding External Binaries
 9. Embedding Additional Files -->
-
+ 
 # Tauri version >= v2.0
 
 Tauri has a new version coming out with additional capabilities, so separated the examples related to the latest release here: 
 
 15. Setting up a tauri 2 project for the first time with `npm create tauri-app@latest -- --beta`. Using `WebviewUrl` to load in 3 different webviews within the one app. Also have a button on the frontend which can open up another `.app` file.
-16. My attempt of extending example15 with an "embedded" app window - tried overlaying the window of the binary when run on top desktop application host window and track the side of the host window so i can be programtically resized. Didn't work as planned
+16. My attempt of extending example15 with an "embedded" app window - tried overlaying the window of the binary when run on top desktop application host window and track the side of the host window so i can be programtically resized. Didn't work as planned.
 17. Embedding a WASM as a webview within a host tauri vue application - also included rust WASM backend function to be called from JS frontend. NOTE: html is rended using `web_sys`.
-18. 
-
+18.
+19. Using the tauri store plugin to save and retrieve a `.bin` file key from the JS frontend. Files are saved to `$APPDATA/`  - Can be represented as `BaseDirectory.AppData`.
