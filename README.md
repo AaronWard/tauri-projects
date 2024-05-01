@@ -36,3 +36,5 @@ Tauri has a new version coming out with additional capabilities, so separated th
 17. Embedding a WASM as a webview within a host tauri vue application - also included rust WASM backend function to be called from JS frontend. NOTE: html is rended using `web_sys`.
 18.
 19. Using the tauri store plugin to save and retrieve a `.bin` file key from the JS frontend. Files are saved to `$APPDATA/`  - Can be represented as `BaseDirectory.AppData`.
+20. Example of creating an email/password account within supabase Auth
+21. Example of logging in with an email/password account OR with Google account within supabase Auth
