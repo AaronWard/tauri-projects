@@ -1,5 +1,5 @@
 # tauri-projects
-Central repository for all learnings with Tauri &amp; Rust Backend
+Central repository for all learnings with Tauri &amp; Rust Backend and Vue JS (my preferred UI framework)
 
 # Tauri version < v1.6.1
 
@@ -37,4 +37,6 @@ Tauri has a new version coming out with additional capabilities, so separated th
 18.
 19. Using the tauri store plugin to save and retrieve a `.bin` file key from the JS frontend. Files are saved to `$APPDATA/`  - Can be represented as `BaseDirectory.AppData`.
 20. Example of creating an email/password account within supabase Auth
-21. Example of logging in with an email/password account OR with Google account within supabase Auth
+21. Example of logging in with an email/password account OR with Google account within supabase Auth 
+22. Example of using `@stripe/connect-js` to create a marketplace payment structure (NOTE: need to come back to this in the future, NOTE 2: All keys in here are test keys)
+23. Example of spinning up a github action workflow using Javascript from the frontend using `@octokit/core`. and Github Apps - `server.js` in a different repo.

@@ -1,0 +1,28 @@
+{
+  "name": "example23",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@octokit/auth-app": "^7.0.0",
+    "@octokit/core": "^6.1.2",
+    "@octokit/request": "^9.1.1",
+    "@tauri-apps/api": ">=2.0.0-beta.0",
+    "@tauri-apps/plugin-shell": ">=2.0.0-beta.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": ">=2.0.0-beta.0",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite": "^5.0.0"
+  }
+}

@@ -3,6 +3,9 @@
 ```bash
 # API version 2024-04-10
 npm install stripe
+npm install @stripe/connect-js
+# Install vscode extension also
+brew install stripe/stripe-cli/stripe
 ```
 
 ---
