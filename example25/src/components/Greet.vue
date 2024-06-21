@@ -145,47 +145,47 @@ export default {
     }
   },
   methods: {
-    // async fetchRepositories() {
-    //   try {
-    //     const response = await fetch(`${import.meta.env.VITE_BACKEND_REPO_URL}`, {
-    //       method: 'POST',
-    //       headers: {
-    //         Authorization: `Bearer ${this.token}`,
-    //       },
-    //     });
+    async fetchRepositories() {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_REPO_URL}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
 
-    //     console.log('Response:', response);
-    //     console.log('Token:', this.token);
+        console.log('Response:', response);
+        console.log('Token:', this.token);
 
-    //     if (response.status === 429) {
-    //       console.error('Rate limit exceeded. Please wait and try again.');
-    //       alert('Rate limit exceeded. Please wait and try again.');
-    //       return;
-    //     }
+        if (response.status === 429) {
+          console.error('Rate limit exceeded. Please wait and try again.');
+          alert('Rate limit exceeded. Please wait and try again.');
+          return;
+        }
 
-    //     if (response.ok) {
-    //       const data = await response.json();
-    //       console.log('Repositories:', data); // Log repositories for debugging
-    //       this.repositories = data.map((repo, index) => ({
-    //         id: index,
-    //         period: repo.full_name,
-    //         private: repo.private,
-    //       }));
-    //     } else {
-    //       console.error('Failed to fetch repositories:', response.statusText);
-    //     }
-    //   } catch (error) {
-    //     console.error('Error fetching repositories:', error);
-    //   }
-    // },
-    // selectRepo(repo) {
-    //   const selectedRepo = {
-    //     name: repo.full_name,
-    //     token: this.token,
-    //   };
-    //   localStorage.setItem('selectedRepo', JSON.stringify(selectedRepo));
-    //   this.$router.push('/');
-    // },
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Repositories:', data); // Log repositories for debugging
+          this.repositories = data.map((repo, index) => ({
+            id: index,
+            period: repo.full_name,
+            private: repo.private,
+          }));
+        } else {
+          console.error('Failed to fetch repositories:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching repositories:', error);
+      }
+    },
+    selectRepo(repo) {
+      const selectedRepo = {
+        name: repo.full_name,
+        token: this.token,
+      };
+      localStorage.setItem('selectedRepo', JSON.stringify(selectedRepo));
+      this.$router.push('/');
+    },
     wakeUpLambda() {
       const backendUrl = import.meta.env.VITE_BACKEND_WAKEUP; // Define a new endpoint for wake-up
       fetch(backendUrl, {
@@ -207,8 +207,8 @@ export default {
     },
     async startGitHubOAuth() {
       const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
-      // const redirectUri = import.meta.env.VITE_BACKEND_OAUTH_URL;
-      const redirectUri = 'https://1b33-37-228-226-71.ngrok-free.app/api/github/callback'
+      const redirectUri = import.meta.env.VITE_BACKEND_OAUTH_URL;
+      // const redirectUri = 'https://1b33-37-228-226-71.ngrok-free.app/api/github/callback'
       const scope = 'repo';
       const oauthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
 
