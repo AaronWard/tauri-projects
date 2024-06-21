@@ -228,7 +228,7 @@ export default {
             ...this.formData,
             description: encodedDescription,
             app_creator_id: '782d241b-ca64-4936-9fa3-380a82580e95',
-            repo_full_name: this.selectedRepo.full_name,
+            repo_full_name: this.selectedRepo.period,
             repo_private: this.selectedRepo.private,
             repo_token: this.token
           }),
