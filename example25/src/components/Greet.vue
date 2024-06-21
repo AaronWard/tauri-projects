@@ -36,10 +36,19 @@
                     <DropdownFull :options="repositories" @selectRepo="selectRepo" />
                   </div>
 
-                  <form @submit.prevent="triggerWorkflow">
+                  <div v-else class="mt-3">
+                    <p>No repositories found. Please install the GitHub App to grant access.</p>
+                  </div>
+
+
+                  <div class="mt-3">
+                    <p>Missing a repository? make sure access has been granted to read the repository</p>
+                    <a href="https://github.com/settings/installations/51940992" target="_blank" class="btn dark:bg-slate-200 bg-slate-900 text-white dark:text-black mt-2">Install GitHub App</a>
+
+                  </div>
+
+                  <form @submit.prevent="triggerWorkflow" v-if="repositories.length">
                     <hr class="my-6 border-t border-slate-200 dark:border-slate-700" />
-
-
                     <div class="text-right">
                       <button type="submit"
                         class="btn mt-2 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-pink-500"
@@ -71,9 +80,8 @@ export default {
   },
   setup() {
     const safetyToggle = ref('No');
-
     return {
-      safetyToggle,
+      safetyToggle
     };
   },
   data() {
@@ -94,16 +102,12 @@ export default {
         resizableToggle: false,
         category: 'Productivity',
         privacyPolicy: 'example.com/privacy',
-        // Permissions
         fsToggle: false,
         shellToggle: false,
         sqlToggle: false,
-        // Monetization
         monetizationToggle: false,
-        // T&Cs
         agreementToggle: false,
         safetyToggle: false,
-        // Target Operating Systems
         targetOperatingSystems: {
           MacOS: false,
           Windows: false,
@@ -114,7 +118,8 @@ export default {
       success: false,
       tags: ['Test Tag'],
       token: null,
-      repositories: []
+      repositories: [],
+      selectedRepo: '',
     };
   },
   computed: {
@@ -141,7 +146,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search);
     this.token = urlParams.get('token');
     if (this.token) {
-      // this.fetchRepositories();
+      this.fetchRepositories();
     }
   },
   methods: {
@@ -179,6 +184,8 @@ export default {
       }
     },
     selectRepo(repo) {
+      this.selectedRepo = repo;
+
       const selectedRepo = {
         name: repo.full_name,
         token: this.token,
@@ -208,17 +215,18 @@ export default {
     async startGitHubOAuth() {
       const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
       const redirectUri = import.meta.env.VITE_BACKEND_OAUTH_URL;
-      // const redirectUri = 'https://1b33-37-228-226-71.ngrok-free.app/api/github/callback'
       const scope = 'repo';
       const oauthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
 
       console.log(`OAuth URL: ${oauthUrl}`); // Log the OAuth URL
       window.location.href = oauthUrl;
-      // window.open(oauthUrl);
-      // window.open(oauthUrl, '_blank', 'width=500,height=500,toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
     },
     async triggerWorkflow() {
+      if (!this.selectedRepo) {
+        alert('Please select a repository.');
+        return;
+      }
+      
       this.loading = true;
       this.success = false;
 
@@ -233,6 +241,9 @@ export default {
             description: encodedDescription,
             app_creator_id: '782d241b-ca64-4936-9fa3-380a82580e95',
           }),
+          repo_full_name: this.selectedRepo.period,
+          repo_private: this.selectedRepo.private,
+          repo_token: this.token,
         },
       };
 
@@ -265,8 +276,6 @@ export default {
       } finally {
         this.loading = false;
       }
-        this.loading = false;
-
     },
   },
 };
