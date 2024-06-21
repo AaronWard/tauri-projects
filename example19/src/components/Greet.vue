@@ -14,7 +14,7 @@ import { exists, BaseDirectory } from '@tauri-apps/plugin-fs';
 // https://v2.tauri.app/references/javascript/fs/#example-2 0 - opening files.
 
 
-AppConfig
+// AppConfig
 // Store will be loaded automatically when used in JavaScript binding.
 const store = new Store('store.bin');
 const key = 'user-input';

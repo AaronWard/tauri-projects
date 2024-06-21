@@ -5,7 +5,7 @@ Central repository for all learnings with Tauri &amp; Rust Backend and Vue JS (m
 
 ```bash
 npm create tauri-app@latest
-npm install --save-dev @tauri-apps/cli
+npm install --save-dev @tauri-apps/cli # npm create tauri-app@latest -- --beta
 npm run tauri dev
 ```
 

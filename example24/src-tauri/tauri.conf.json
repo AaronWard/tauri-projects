@@ -1,16 +1,17 @@
 {
-  "productName": "example23",
+  "productName": "example24",
   "version": "0.0.0",
-  "identifier": "com.aw.dev",
+  "identifier": "com.tauri.dev",
   "build": {
-    "beforeDevCommand": "npm run dev ",
+    "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
-  "app": {"windows": [
+  "app": {
+    "windows": [
       {
-        "title": "example23",
+        "title": "example24",
         "width": 800,
         "height": 600
       }
@@ -19,7 +20,6 @@
       "csp": null
     }
   },
-  
   "bundle": {
     "active": true,
     "targets": "all",
