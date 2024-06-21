@@ -38,13 +38,8 @@
 
                   <div v-else class="mt-3">
                     <p>No repositories found. Please install the GitHub App to grant access.</p>
-                  </div>
-
-
-                  <div class="mt-3">
-                    <p>Missing a repository? make sure access has been granted to read the repository</p>
-                    <a href="https://github.com/settings/installations/51940992" target="_blank" class="btn dark:bg-slate-200 bg-slate-900 text-white dark:text-black mt-2">Install GitHub App</a>
-
+                    <a href="https://github.com/settings/installations/51940992" target="_blank"
+                      class="btn dark:bg-slate-200 bg-slate-900 text-white dark:text-black mt-2">Install GitHub App</a>
                   </div>
 
                   <form @submit.prevent="triggerWorkflow" v-if="repositories.length">
@@ -80,8 +75,9 @@ export default {
   },
   setup() {
     const safetyToggle = ref('No');
+
     return {
-      safetyToggle
+      safetyToggle,
     };
   },
   data() {
@@ -102,12 +98,16 @@ export default {
         resizableToggle: false,
         category: 'Productivity',
         privacyPolicy: 'example.com/privacy',
+        // Permissions
         fsToggle: false,
         shellToggle: false,
         sqlToggle: false,
+        // Monetization
         monetizationToggle: false,
+        // T&Cs
         agreementToggle: false,
         safetyToggle: false,
+        // Target Operating Systems
         targetOperatingSystems: {
           MacOS: false,
           Windows: false,
@@ -119,7 +119,7 @@ export default {
       tags: ['Test Tag'],
       token: null,
       repositories: [],
-      selectedRepo: '',
+      selectedRepo: null
     };
   },
   computed: {
@@ -173,7 +173,7 @@ export default {
           console.log('Repositories:', data); // Log repositories for debugging
           this.repositories = data.map((repo, index) => ({
             id: index,
-            period: repo.full_name,
+            period: repo.period,
             private: repo.private,
           }));
         } else {
@@ -185,13 +185,6 @@ export default {
     },
     selectRepo(repo) {
       this.selectedRepo = repo;
-
-      const selectedRepo = {
-        name: repo.full_name,
-        token: this.token,
-      };
-      localStorage.setItem('selectedRepo', JSON.stringify(selectedRepo));
-      this.$router.push('/');
     },
     wakeUpLambda() {
       const backendUrl = import.meta.env.VITE_BACKEND_WAKEUP; // Define a new endpoint for wake-up
@@ -222,11 +215,6 @@ export default {
       window.location.href = oauthUrl;
     },
     async triggerWorkflow() {
-      if (!this.selectedRepo) {
-        alert('Please select a repository.');
-        return;
-      }
-      
       this.loading = true;
       this.success = false;
 
@@ -240,10 +228,10 @@ export default {
             ...this.formData,
             description: encodedDescription,
             app_creator_id: '782d241b-ca64-4936-9fa3-380a82580e95',
+            repo_full_name: this.selectedRepo.full_name,
+            repo_private: this.selectedRepo.private,
+            repo_token: this.token
           }),
-          repo_full_name: this.selectedRepo.period,
-          repo_private: this.selectedRepo.private,
-          repo_token: this.token,
         },
       };
 
