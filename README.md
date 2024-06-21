@@ -40,3 +40,5 @@ Tauri has a new version coming out with additional capabilities, so separated th
 21. Example of logging in with an email/password account OR with Google account within supabase Auth 
 22. Example of using `@stripe/connect-js` to create a marketplace payment structure (NOTE: need to come back to this in the future, NOTE 2: All keys in here are test keys)
 23. Example of spinning up a github action workflow using Javascript from the frontend using `@octokit/core`. and Github Apps - `server.js` in a different repo.
+24. nothing interesting here, just wanted to test out the filepath of an application for the store/binaries
+25. Getting access to private repositories via github app, and displaying the authorized repos within the form. 
