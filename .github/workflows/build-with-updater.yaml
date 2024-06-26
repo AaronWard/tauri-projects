@@ -1,4 +1,4 @@
-name: Publish Tauri App
+name: Publish Tauri App With Updater
 
 on:
   push:
