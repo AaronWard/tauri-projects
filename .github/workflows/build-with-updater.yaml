@@ -1,0 +1,89 @@
+name: Publish Tauri App
+
+on:
+  push:
+    branches:
+      - release
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        settings:
+          - platform: 'macos-latest' # for Arm based macs (M1 and above).
+            args: '--target aarch64-apple-darwin'
+          - platform: 'macos-latest' # for Intel based macs.
+            args: '--target x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04' # for Tauri v2 you could replace this with ubuntu-20.04.
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
+    runs-on: ${{ matrix.settings.platform }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install System Dependencies (Ubuntu only)
+        if: matrix.settings.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+        working-directory: .
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install Rust Stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Cache Rust Target Folder
+        uses: swatinem/rust-cache@v2
+        with:
+          # Adjusted path for workspaces to match the project directory structure
+          workspaces: 'src-tauri'
+
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: .
+
+      - name: Build Tauri Application
+        run: npm run build
+        working-directory: .
+
+      - name: Setup Tauri Environment Variables
+        run: |
+          echo "TAURI_PRIVATE_KEY=${{ secrets.TAURI_PRIVATE_KEY }}" >> $GITHUB_ENV
+          echo "TAURI_KEY_PASSWORD=${{ secrets.TAURI_KEY_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Sign Artifacts
+        run: |
+          tauri signer sign --key $TAURI_PRIVATE_KEY --password $TAURI_KEY_PASSWORD ./src-tauri/target/release/bundle/
+
+      - name: Create GitHub Release
+        uses: tauri-apps/tauri-action@v0
+        with:
+          tagName: v__VERSION__
+          releaseName: v__VERSION__
+          releaseDraft: true
+          prerelease: false
+          draft: true
+          includeReleaseName: true
+          releaseBody: 'See the assets to download this version and install.'
+          releaseBodyPath: ''
+          releaseAssets: './src-tauri/target/release/bundle/**'
+          target: ${{ matrix.settings.platform }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
