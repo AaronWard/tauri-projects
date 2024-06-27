@@ -71,7 +71,6 @@ jobs:
           tauri signer sign --key $TAURI_PRIVATE_KEY --password $TAURI_KEY_PASSWORD ./src-tauri/target/release/bundle/
         working-directory: example26
 
-
       - name: Set up keychain (macOS only)
         if: matrix.platform == 'macos-latest'
         run: |

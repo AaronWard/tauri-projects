@@ -1,7 +1,7 @@
 {
   "productName": "example26",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.updater.dev",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -21,6 +21,7 @@
     }
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": "all",
     "icon": [
@@ -30,5 +31,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "CONTENT FROM PUBLICKEY.PEM",
+      "endpoints": [
+        "https://github.com/AaronWard/tauri-projects/releases/latest/download/latest.json"
+      ]
+    }
   }
 }
