@@ -3,7 +3,7 @@
 
 
 // You can either relaunch from tauri rust api below
-// or do it with `import { relaunch } from '@tauri-apps/api/process';`
+// or do it with `import { relaunch } from '@tauri-apps/plugin-process'
 // use tauri::{api::process::restart, Manager};
 
 
@@ -11,6 +11,13 @@
 // fn restart(app: tauri::AppHandle) {
 //     restart(&app.env());
 // }
+
+
+// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+#[tauri::command]
+fn greet(name: &str) -> String {
+    format!("Hello, {}! You've been greeted from Rust!", name)
+}
 
 
 fn main() {
