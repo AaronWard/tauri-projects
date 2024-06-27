@@ -262,3 +262,5 @@ notes can be any string.
 
 - Set the same project version in the `Cargo.toml`, `tauri.conf.json` and `package.json` files - `0.0.1`
 - https://thatgurjot.com/til/tauri-auto-updater/
+
+- https://v2.tauri.app/reference/javascript/process/#relaunch - Relaunch via javascript
