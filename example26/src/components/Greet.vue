@@ -1,21 +1,60 @@
+<template>
+  <form class="row" @submit.prevent="checkForAppUpdates">
+    <button type="submit">Check for Updates</button>
+  </form>
+
+  <p>{{ msg }}</p>
+</template>
+
+
 <script setup>
 import { ref } from "vue";
 import { invoke } from "@tauri-apps/api/core";
+import { check } from '@tauri-apps/plugin-updater';
+import { ask, message } from '@tauri-apps/plugin-dialog';
+import { relaunch } from '@tauri-apps/api/process';
 
-const greetMsg = ref("");
-const name = ref("");
+const msg = ref("");
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-  greetMsg.value = await invoke("greet", { name: name.value });
+async function checkForAppUpdates() {
+  const update = await check();
+  if (update === null) {
+    await message('Failed to check for updates.\nPlease try again later.', {
+      title: 'Error',
+      kind: 'error',
+      okLabel: 'OK'
+    });
+    return;
+  } else if (update?.available) {
+    const yes = await ask(`Update to ${update.version} is available!\n\nRelease notes: ${update.body}`, {
+      title: 'Update Available',
+      kind: 'info',
+      okLabel: 'Update',
+      cancelLabel: 'Cancel'
+    });
+    if (yes) {
+      await update.downloadAndInstall();
+      // Restart the app after the update is installed by calling the Tauri command that handles restart for your app
+      // It is good practice to shut down any background processes gracefully before restarting
+      // As an alternative, you could ask the user to restart the app manually
+ 
+      // await invoke("restart");
+
+      // Javascript API for simplicity
+      await relaunch();
+      
+    }
+  } else if (onUserClick) {
+    await message('You are on the latest version. Stay awesome!', {
+      title: 'No Update Available',
+      kind: 'info',
+      okLabel: 'OK'
+    });
+  }
 }
+
+
+
+
 </script>
 
-<template>
-  <form class="row" @submit.prevent="greet">
-    <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-    <button type="submit">Greet</button>
-  </form>
-
-  <p>{{ greetMsg }}</p>
-</template>

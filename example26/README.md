@@ -4,7 +4,7 @@
 ### 1. Install updated plugin
 
 ```bash
-npm install @tauri-apps/plugin-updater
+npm install @tauri-apps/plugin-updater  @tauri-apps/plugin-dialog
 ```
 
 ### 2. Generate key
@@ -70,15 +70,17 @@ $env:TAURI_SIGNING_PRIVATE_KEY_PASSWORD="$HOME/.tauri/myapp.key.pub"
 
 
 
-### Update `tauri.cong.json`
+### 5. Update `tauri.conf.json`
 
 
 Change default identifier value:
+
 ```
 "identifier": "com.tauri.dev"
 ```
 
 Update values:
+
 ```json
 {
   "bundle": {
@@ -94,12 +96,14 @@ Update values:
       ]
     }
   }
-}```
+}
+```
 
 
 
 Full `tauri.conf.json`:
-```bash
+
+```json
 {
   "productName": "example26",
   "version": "0.0.0",
@@ -136,6 +140,9 @@ Full `tauri.conf.json`:
   },
   "plugins": {
     "updater": {
+      "windows": {
+        "installMode": "passive"
+      },
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDY1ODNCRDU1NDQzQ0Y5RDQKUldUVStUeEVWYjJEWmJNVkNKamgyTUw0L29tUlc2NGpaUjh6aEdabjRZWGZlZHYvc3FZVlo4bjgK",
       "endpoints": [
         "https://github.com/AaronWard/tauri-projects/releases/latest/download/latest.json"
@@ -144,3 +151,114 @@ Full `tauri.conf.json`:
   }
 }
 ```
+
+NEED TO CONFIRM: can `endpoints` be set to private repositories?
+
+
+### 6. Add Update Check Button in UI
+
+/src/components/greet.vue:
+
+```js
+// sample front-end code for the updater
+import { check } from '@tauri-apps/plugin-updater';
+import { ask, message } from '@tauri-apps/plugin-dialog';
+
+async function checkForAppUpdates() {
+  const update = await check();
+  if (update === null) {
+			await message('Failed to check for updates.\nPlease try again later.', { 
+				title: 'Error',
+				kind: 'error',
+				okLabel: 'OK'
+			});
+			return;
+		} else if (update?.available) {
+    const yes = await ask(`Update to ${update.version} is available!\n\nRelease notes: ${update.body}`, { 
+      title: 'Update Available',
+      kind: 'info',
+      okLabel: 'Update',
+      cancelLabel: 'Cancel'
+    });
+    if (yes) {
+      await update.downloadAndInstall();
+      // Restart the app after the update is installed by calling the Tauri command that handles restart for your app
+      // It is good practice to shut down any background processes gracefully before restarting
+      // As an alternative, you could ask the user to restart the app manually
+      await invoke("graceful_restart");
+    }
+  } else if (onUserClick) {
+    await message('You are on the latest version. Stay awesome!', { 
+      title: 'No Update Available',
+      kind: 'info',
+      okLabel: 'OK'
+    });
+  }
+}
+```
+
+### 7. Add the relevant permissions in your `capabilities > main.json` file.
+
+
+```json
+{
+  "permissions": [
+    ...
+    "dialog:default",
+    "dialog:allow-ask",
+    "dialog:allow-message",
+    "updater:default",
+    "updater:allow-check",
+    "updater:allow-download-and-install"
+  ]
+}
+```
+
+## Make latest.json
+
+```json
+{
+  "version": "v0.0.1",
+  "notes": "Your Release Notes go here",
+  "pub_date": "2020-06-22T19:25:57Z",
+  "platforms": {
+    "darwin-x86_64": {
+      "signature": "Content of app.tar.gz.sig",
+      "url": "https://github.com/username/reponame/releases/download/v1.0.0/app-x86_64.app.tar.gz"
+    },
+    "darwin-aarch64": {
+      "signature": "Content of app.tar.gz.sig",
+      "url": "https://github.com/username/reponame/releases/download/v1.0.0/app-aarch64.app.tar.gz"
+    },
+    "linux-x86_64": {
+      "signature": "Content of app.AppImage.tar.gz.sig",
+      "url": "https://github.com/username/reponame/releases/download/v1.0.0/app-amd64.AppImage.tar.gz"
+    },
+    "windows-x86_64": {
+      "signature": "Content of app-setup.nsis.sig or app.msi.sig, depending on the chosen format",
+      "url": "https://github.com/username/reponame/releases/download/v1.0.0/app-x64-setup.nsis.zip"
+    }
+  }
+}
+```
+
+- version can be with or without the leading v.
+notes can be any string.
+- pub_date should be in the format YYYY-MM-DDTHH:MM:SSZ.
+- platforms can contain the platforms you are targeting. The keys should be the platform names and the values should be objects with signature and url keys.
+- signature should be the content of the signature file generated when you build for the respective platform.
+- url should be the URL to the binary file from the release. Don’t accidentally put the URL of the release page itself.
+
+
+> is `universal-apple-darwin` supported?
+> https://discord.com/channels/616186924390023171/1213374366981693490/1213374959183859754
+
+
+
+---
+
+
+
+
+- Set the same project version in the `Cargo.toml`, `tauri.conf.json` and `package.json` files - `0.0.1`
+- https://thatgurjot.com/til/tauri-auto-updater/
