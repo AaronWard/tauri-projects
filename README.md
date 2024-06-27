@@ -42,3 +42,4 @@ Tauri has a new version coming out with additional capabilities, so separated th
 23. Example of spinning up a github action workflow using Javascript from the frontend using `@octokit/core`. and Github Apps - `server.js` in a different repo.
 24. nothing interesting here, just wanted to test out the filepath of an application for the store/binaries
 25. Getting access to private repositories via github app, and displaying the authorized repos within the form. 
+26. A tauri application that incorporates an update, allowing automated updates to the app installed on users machines. This example also incorporates code signing. So 2 different types of signing (Updater and binary) - See `.github/workflows/build-binary-with-updater.yaml`
