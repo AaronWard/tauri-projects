@@ -71,34 +71,34 @@ jobs:
           tauri signer sign --key $TAURI_PRIVATE_KEY --password $TAURI_KEY_PASSWORD ./src-tauri/target/release/bundle/
         working-directory: example26
 
-      - name: Set up keychain (macOS only)
-        if: matrix.platform == 'macos-latest'
-        run: |
-          echo "Creating and configuring keychain"
-          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
-          security list-keychains -s build.keychain
-        shell: bash
+      # - name: Set up keychain (macOS only)
+      #   if: matrix.platform == 'macos-latest'
+      #   run: |
+      #     echo "Creating and configuring keychain"
+      #     security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+      #     security default-keychain -s build.keychain
+      #     security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+      #     security list-keychains -s build.keychain
+      #   shell: bash
 
-      - name: Import Certificate (macOS only)
-        if: matrix.platform == 'macos-latest'
-        run: |
-          echo "Decoding certificate"
-          echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > certificate.p12
-          echo "Importing certificate"
-          security import certificate.p12 -k build.keychain -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
-          echo "Listing keychains"
-          security list-keychains
-          echo "Finding identity"
-          security find-identity -p codesigning
-          echo "Setting key partition list with password"
-          security set-key-partition-list -S apple-tool:,apple: -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
-          echo "Finding identity after setting partition list"
-          security find-identity -p codesigning
-        shell: bash
-        env:
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+      # - name: Import Certificate (macOS only)
+      #   if: matrix.platform == 'macos-latest'
+      #   run: |
+      #     echo "Decoding certificate"
+      #     echo "${{ secrets.APPLE_CERTIFICATE }}" | base64 --decode > certificate.p12
+      #     echo "Importing certificate"
+      #     security import certificate.p12 -k build.keychain -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
+      #     echo "Listing keychains"
+      #     security list-keychains
+      #     echo "Finding identity"
+      #     security find-identity -p codesigning
+      #     echo "Setting key partition list with password"
+      #     security set-key-partition-list -S apple-tool:,apple: -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+      #     echo "Finding identity after setting partition list"
+      #     security find-identity -p codesigning
+      #   shell: bash
+      #   env:
+      #     APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
 
       - name: Create GitHub Release
         uses: tauri-apps/tauri-action@v0
@@ -113,12 +113,12 @@ jobs:
           releaseBodyPath: ''
           releaseAssets: './src-tauri/target/release/bundle/**'
           target: ${{ matrix.settings.platform }}
-          projectPath: example26 # Setting projectPath to match your project directory
+          projectPath: example26
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
