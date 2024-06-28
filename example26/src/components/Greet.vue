@@ -1,6 +1,6 @@
 <template>
   <form class="row" @submit.prevent="checkForAppUpdates">
-    <button type="submit">Check for Updates</button>
+    <button type="submit">Restart</button>
   </form>
 
   <p>{{ msg }}</p>
@@ -9,17 +9,24 @@
 
 <script setup>
 import { ref } from "vue";
-// import { invoke } from "@tauri-apps/api/core";
+import { invoke } from "@tauri-apps/api/core";
 import { check } from '@tauri-apps/plugin-updater';
 import { ask, message } from '@tauri-apps/plugin-dialog';
-import { relaunch } from '@tauri-apps/plugin-process'
+import { exit, relaunch } from '@tauri-apps/plugin-process'
 
 const msg = ref("");
 
 
 
 async function checkForAppUpdates() {
+
+  // Used to shut down the app
+  // await exit(0);
+
   await relaunch();
+
+  // await invoke("restart");
+
 
 
   // const update = await check();
@@ -42,12 +49,12 @@ async function checkForAppUpdates() {
   //     // Restart the app after the update is installed by calling the Tauri command that handles restart for your app
   //     // It is good practice to shut down any background processes gracefully before restarting
   //     // As an alternative, you could ask the user to restart the app manually
-      
+
   //     // await invoke("restart");
 
   //     // Javascript API for simplicity
   //     await relaunch();
-      
+
   //   }
   // } else if (onUserClick) {
   //   await message('You are on the latest version. Stay awesome!', {
@@ -58,8 +65,4 @@ async function checkForAppUpdates() {
   // }
 }
 
-
-
-
 </script>
-
